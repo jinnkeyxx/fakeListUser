@@ -8,8 +8,10 @@ router.get('/', function(req, res, next) {
     {name : 'Bao' , age : 20},
     {name : 'teo' , age : 30},
   ]
+  let total = dataArr.length
   res.json({
-    data : dataArr
+    total : total,
+    data : dataArr,
   })
 });
 

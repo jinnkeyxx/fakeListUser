@@ -1,128 +1,58 @@
 var express = require('express');
 var router = express.Router();
 const url = `http://localhost:3001`
+const mongoose = require('mongoose')
+const hotoffer = require('../models/hotoffer')
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-
-  // res.send('respond with a resource');
-  if(req.params.num == 1){
-
-  }
-    let dataArr  = {
-        toTal : 8,
-        Product : [
-            {
-                title : 'Nuoc rua Bat',
-                image : `${url}/images/1.png` ,
-                newPrice : 600,
-                oldPrice : 300,
-                discount : 50,
-            },
-            {
-                title : 'Nuoc rua Bat',
-                image : `${url}/images/1.png` ,
-                newPrice : 600,
-                oldPrice : 300,
-                discount : 50,
-            },
-            {
-                title : 'Nuoc rua Bat',
-                image : `${url}/images/1.png` ,
-                newPrice : 600,
-                oldPrice : 300,
-                discount : 50,
-            },
-            {
-                title : 'Nuoc rua Bat',
-                image : `${url}/images/1.png` ,
-                newPrice : 600,
-                oldPrice : 300,
-                discount : 50,
-            },
-        ]
-    }
-  res.json({
-    data : dataArr
-  })
+router.get('/', async (req, res, next) => {
+    await hotoffer.find((err, result) => {
+        if (err)  console.log(err);
+        res.json({data : result , totalItem : result.length});
+    });
 });
-router.get('/page/:num', function(req, res, next) {
-   let dataArr = {}
-    if(req.params.num == 1){
-        dataArr  = {
-            page : 1,
-            toTal : 8,
-            Product : [
-                {
-                    title : 'Nuoc rua Bat',
-                    image : `${url}/images/1.png` ,
-                    newPrice : 600,
-                    oldPrice : 300,
-                    discount : 50,
-                },
-                {
-                    title : 'Nuoc rua Bat',
-                    image : `${url}/images/1.png` ,
-                    newPrice : 600,
-                    oldPrice : 300,
-                    discount : 50,
-                },
-                {
-                    title : 'Nuoc rua Bat',
-                    image : `${url}/images/1.png` ,
-                    newPrice : 600,
-                    oldPrice : 300,
-                    discount : 50,
-                },
-                {
-                    title : 'Nuoc rua Bat',
-                    image : `${url}/images/1.png` ,
-                    newPrice : 600,
-                    oldPrice : 300,
-                    discount : 50,
-                },
-            ]
-        }
-    }
-    else {
-        dataArr  = {
-            page : 2,
-            toTal : 8,
-            Product : [
-                {
-                    title : 'Nuoc rua Chen',
-                    image : `${url}/images/1.png` ,
-                    newPrice : 600,
-                    oldPrice : 300,
-                    discount : 50,
-                },
-                {
-                    title : 'Nuoc rua Chen',
-                    image : `${url}/images/1.png` ,
-                    newPrice : 600,
-                    oldPrice : 300,
-                    discount : 50,
-                },
-                {
-                    title : 'Nuoc rua Chen',
-                    image : `${url}/images/1.png` ,
-                    newPrice : 600,
-                    oldPrice : 300,
-                    discount : 50,
-                },
-                {
-                    title : 'Nuoc rua Chen',
-                    image : `${url}/images/1.png` ,
-                    newPrice : 600,
-                    oldPrice : 300,
-                    discount : 50,
-                },
-            ]
-        }
-    }
-    res.json({
-        data : dataArr
+router.post('/addoffer' , (req , res , next) => {
+    const Hotoffer = new hotoffer({
+        _id: new mongoose.Types.ObjectId(),
+        title : req.body.title,
+        image: req.body.image,
+        newPrice: req.body.newPrice,
+        oldPrice: req.body.oldPrice,
+        discount: req.body.discount,
+      });
+      hotoffer
+        .save()
+        .then(result => {
+          console.log(result);
+          res.status(201).json({
+            message: "Handling POST requests to /products",
+            hotoffer: result
+          });
+        })
+        .catch(err => {
+          console.log(err);
+          res.status(500).json({
+            error: err
+          });
+        });
+})
+router.get('/page/:num/:limit', async(req, res, next) => {
+    let dataArr = []
+    await hotoffer.find()
+    .exec()
+    .then(docs => {
+    const num = req.params.num
+    const limit = req.params.limit
+    const startIndex = (num - 1) * limit
+    const endIndex = num * limit
+    const result = docs.slice(startIndex , endIndex)
+      res.status(200).json({data : result , totalItem : result.length});
     })
-
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
 })
 
 module.exports = router;
