@@ -21,7 +21,7 @@ app.set('port', port);
 
 var server = http.createServer(app);
 var mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost/Thuc-pham', {useNewUrlParser: true});
+mongoose.connect('mongodb+srv://bool:baooibao1@cluster0.jfca9.mongodb.net/<dbname>?retryWrites=true&w=majority', {useNewUrlParser: true});
 /**
  * Listen on provided port, on all network interfaces.
  */

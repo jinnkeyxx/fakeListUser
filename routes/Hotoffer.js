@@ -19,7 +19,7 @@ router.post('/addoffer' , (req , res , next) => {
         oldPrice: req.body.oldPrice,
         discount: req.body.discount,
       });
-      hotoffer
+      Hotoffer
         .save()
         .then(result => {
           console.log(result);
